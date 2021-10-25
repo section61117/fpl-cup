@@ -1,26 +1,40 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Button } from '@mui/material'
+import React from 'react'
+import './App.css'
+// import axios from 'axios'
+import express from 'express'
+import { createProxyMiddleware } from 'http-proxy-middleware'
+
+// const plUrl = 'https://fantasy.premierleague.com/api/bootstrap-static/'
+const app = express()
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+	function middlewareOption() {
+		// proxy middleware options
+		const options = {
+			target: 'https://fantasy.premierleague.com/api', // target host
+			changeOrigin: true, // needed for virtual hosted sites
+		};
+
+		// create the proxy (without context)
+		const fplProxy = createProxyMiddleware(options);
+
+		// mount `exampleProxy` in web server
+
+		app.use('/bootstrap-static', fplProxy);
+		app.listen(3000);
+
+	}
+
+	middlewareOption()
+
+
+	return (
+		<div className="App">
+			<Button variant="contained">Button Time</Button>
+		</div>
+	)
 }
 
-export default App;
+export default App
